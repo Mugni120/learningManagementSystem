@@ -1,0 +1,31 @@
+<%- include('../partials/header') %>
+<a class="back-link" href="/instructor/assignments?course=<%= assignment.course_id %>">&larr; Kembali ke daftar assignment</a>
+<div class="page-head">
+  <h1>Submissions: <%= assignment.title %></h1>
+</div>
+<% if (msg) { %><div class="alert alert-success"><%= msg %></div><% } %>
+<% if (!submissions.length) { %>
+  <div class="card"><p class="muted">Belum ada submission.</p></div>
+<% } else { %>
+  <% submissions.forEach(function (s) { %>
+    <div class="card module-card">
+      <div class="module-head">
+        <h2><%= s.student_name %> <span class="muted">(<%= s.student_email %>)</span></h2>
+        <span class="muted"><%= s.submitted_at.toLocaleString('id-ID') %></span>
+      </div>
+      <div class="lesson-content"><%= s.content %></div>
+      <form method="POST" action="/instructor/submissions/<%= s.id %>/grade" class="grade-form">
+        <input type="hidden" name="assignment_id" value="<%= assignment.id %>">
+        <input type="hidden" name="student_id" value="<%= s.student_id %>">
+        <label>Score (0-<%= assignment.max_score %>)
+          <input type="number" name="score" min="0" max="<%= assignment.max_score %>" step="0.01" value="<%= s.score !== null ? s.score : '' %>" required>
+        </label>
+        <label>Feedback
+          <textarea name="feedback" rows="2"><%= s.feedback || '' %></textarea>
+        </label>
+        <button class="btn btn-small btn-primary"><%= s.score !== null ? 'Perbarui Nilai' : 'Simpan Nilai' %></button>
+      </form>
+    </div>
+  <% }); %>
+<% } %>
+<%- include('../partials/footer') %>

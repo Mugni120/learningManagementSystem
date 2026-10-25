@@ -1,0 +1,37 @@
+services:
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: lms-root-pass
+      MYSQL_DATABASE: lms_db
+    volumes:
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - lms-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-plms-root-pass"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      SESSION_SECRET: replace-with-64-char-random-string
+      DB_HOST: db
+      DB_USER: root
+      DB_PASS: lms-root-pass
+      DB_NAME: lms_db
+      DB_POOL_LIMIT: 20
+      TRUST_PROXY_HOPS: 1
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  lms-data:

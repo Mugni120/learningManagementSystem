@@ -1,0 +1,98 @@
+<%- include('../partials/header') %>
+<a class="back-link" href="/learn/<%= quiz.course_id %>">&larr; Kembali ke course</a>
+
+<div class="page-head">
+  <div style="flex:1;">
+    <h1 style="margin:0;"><%= quiz.title %></h1>
+    <p class="muted" style="margin:4px 0 0;"><%= quiz.description || 'Kerjakan dengan teliti.' %></p>
+  </div>
+  <div style="text-align:right;">
+    <div class="tag" style="background: var(--success-light); color: var(--success);">Passing: <%= quiz.passing_score %>%</div>
+    <div class="tag tag-level" style="margin-top:6px;">Sisa: <%= attemptsLeft %> kali</div>
+  </div>
+</div>
+
+<% if (quiz.time_limit_minutes) { %>
+<div class="card" style="border:2px solid var(--primary); background: var(--primary-light);">
+  <div style="display:flex; align-items:center; gap:12px; justify-content:space-between;">
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span style="font-size:1.5rem;">⏱</span>
+      <span style="font-weight:800; color: var(--primary-dark); font-size:1.1rem;">Time Limit</span>
+    </div>
+    <div id="quiz-timer" style="font-size:1.5rem; font-weight:800; font-family: monospace; color: var(--primary-dark);">--:--</div>
+  </div>
+  <input type="hidden" name="time_limit" value="<%= quiz.time_limit_minutes * 60 %>">
+  <input type="hidden" id="timer-display" value="">
+</div>
+<% } %>
+
+<form method="POST" action="/quizzes/<%= quiz.id %>/submit" id="quiz-form">
+  <% questions.forEach(function (q, qi) { %>
+    <div class="card quiz-question-card" style="animation-delay: <%= qi * 0.15 %>s;">
+      <div class="module-head" style="padding-bottom:16px; border-bottom:1px solid var(--border); margin-bottom:16px;">
+        <h2 style="margin:0; font-size:1.1rem;"><%= qi + 1 %>. <%= q.question_text %></h2>
+        <span class="tag" style="background: var(--primary-light); color: var(--primary-dark); font-size:0.7rem;"><%= q.question_type %></span>
+        <span class="tag tag-level"><%= q.points %> poin</span>
+      </div>
+      <div class="option-list">
+        <% q.options.forEach(function (o) { %>
+          <label class="option-row" style="cursor:pointer;">
+            <input type="radio" name="q_<%= q.id %>" value="<%= o.id %>" style="width:auto; margin:0;">
+            <span style="flex:1;"><%= o.option_text %></span>
+            <span class="check" style="font-size:0.75rem;">Pilih</span>
+          </label>
+        <% }); %>
+      </div>
+    </div>
+  <% }); %>
+  <div style="text-align:center; margin-top:28px;">
+    <button type="submit" class="btn btn-primary" style="padding:14px 32px; font-size:1rem;" data-confirm="Kumpulkan jawaban? Nilai akan dicatat otomatis dan tidak dapat diubah.">📤 Kumpulkan Jawaban</button>
+  </div>
+</form>
+
+<script>
+  // Timer countdown
+  (function () {
+    var totalSeconds = parseInt(document.querySelector('input[name="time_limit"]').value, 10);
+    var display = document.getElementById('quiz-timer');
+    if (!display || isNaN(totalSeconds)) return;
+
+    function update() {
+      var m = Math.floor(totalSeconds / 60);
+      var s = totalSeconds % 60;
+      display.textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+      if (totalSeconds <= 0) {
+        display.textContent = '00:00';
+        display.style.color = 'var(--danger)';
+        document.getElementById('quiz-form').requestSubmit ? document.getElementById('quiz-form').requestSubmit() : document.getElementById('quiz-form').submit();
+        return;
+      }
+      if (totalSeconds <= 60) display.style.color = 'var(--danger)';
+      totalSeconds--;
+    }
+    update();
+    setInterval(update, 1000);
+  })();
+
+  // Highlight selected option
+  document.querySelectorAll('.option-row').forEach(function (row) {
+    var radio = row.querySelector('input[type="radio"]');
+    var check = row.querySelector('.check');
+    radio.addEventListener('change', function () {
+      // Unselect siblings
+      row.parentElement.querySelectorAll('.option-row').forEach(function (r) {
+        r.style.background = '#f8fafc';
+        r.querySelector('.check').textContent = 'Pilih';
+        r.querySelector('.check').style.background = '#f1f5f9';
+        r.querySelector('.check').style.color = 'var(--muted)';
+      });
+      row.style.background = 'var(--primary-light)';
+      row.style.borderColor = 'var(--primary)';
+      check.textContent = '✓ Terpilih';
+      check.style.background = 'var(--success-light)';
+      check.style.color = 'var(--success)';
+    });
+  });
+</script>
+
+<%- include('../partials/footer') %>

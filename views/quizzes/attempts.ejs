@@ -1,0 +1,21 @@
+<%- include('../partials/header') %>
+<a class="back-link" href="/instructor/quizzes?course=<%= quiz.course_id %>">&larr; Kembali ke daftar quiz</a>
+<div class="page-head"><h1>Attempts: <%= quiz.title %></h1></div>
+<% if (!attempts.length) { %>
+  <div class="card"><p class="muted">Belum ada attempt.</p></div>
+<% } else { %>
+<table class="table">
+  <thead><tr><th>Student</th><th>Dikerjakan</th><th>Score</th><th>Hasil</th></tr></thead>
+  <tbody>
+  <% attempts.forEach(function (t) { %>
+    <tr>
+      <td><%= t.student_name %><br><span class="muted"><%= t.student_email %></span></td>
+      <td><%= t.submitted_at.toLocaleString('id-ID') %></td>
+      <td><%= t.score %></td>
+      <td><span class="status-badge <%= t.passed ? 'status-published' : 'status-archived' %>"><%= t.passed ? 'lulus' : 'tidak lulus' %></span></td>
+    </tr>
+  <% }); %>
+  </tbody>
+</table>
+<% } %>
+<%- include('../partials/footer') %>

@@ -1,0 +1,35 @@
+<%- include('../partials/header') %>
+<div class="page-head">
+  <h1>Sertifikat Kelulusan</h1>
+  <a class="btn btn-outline" href="/learn/<%= course.id %>">Kembali ke Course</a>
+</div>
+<div class="card auth-card" style="max-width: 720px; margin: 0 auto; position: relative; overflow: hidden; border: 2px solid var(--primary);">
+  <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: 4px double rgba(37,99,235,0.25); pointer-events: none; border-radius: var(--radius);"></div>
+  <div style="position: relative; z-index: 1; padding: 40px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+      <div style="font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px;">LMS — Learning Management System</div>
+      <div style="font-size: 0.85rem; color: var(--muted);">No. LMS-<%= course.id %>-<%= enrollment.id %></div>
+    </div>
+    <h1 style="font-size: 2rem; margin: 32px 0; color: var(--text);">Sertifikat Kelulusan</h1>
+    <p style="font-size: 1.1rem; color: var(--muted); margin-bottom: 32px;">Ini menyatakan bahwa</p>
+    <div style="font-size: 1.75rem; font-weight: 800; color: var(--primary); margin-bottom: 32px; border-bottom: 2px solid var(--border); display: inline-block; padding-bottom: 8px;"><%= student.full_name %></div>
+    <p style="color: var(--muted);">telah menyelesaikan semua lesson dalam course</p>
+    <h2 style="font-size: 1.5rem; color: var(--text); margin-bottom: 8px;"><%= course.title %></h2>
+    <p class="muted">dengan nilai progres <strong><%= percent %>%</strong> dan status kelulusan: <span class="badge badge-student">LULUS</span></p>
+    <div style="margin-top: 48px; display: flex; gap: 24px;">
+      <div>
+        <p class="muted" style="font-size: 0.8rem; text-transform: uppercase;">Tanggal Terbit</p>
+        <div style="font-weight: 600;"><%= new Date(enrollment.completed_at || enrollment.enrolled_at).toLocaleDateString('id-ID') %></div>
+      </div>
+      <div>
+        <p class="muted" style="font-size: 0.8rem; text-transform: uppercase;">Instruktur</p>
+        <div style="font-weight: 600;"><%= course.instructor_name %></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div style="text-align: center; margin-top: 16px;">
+  <a class="btn btn-outline" href="/learn/<%= course.id %>/certificate" onclick="window.print(); return false;">Cetak Sertifikat</a>
+  <a class="btn btn-primary" href="/dashboard">Kembali ke Dashboard</a>
+</div>
+<%- include('../partials/footer') %>

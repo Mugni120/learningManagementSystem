@@ -1,0 +1,45 @@
+<%- include('../../partials/header') %>
+<div class="page-head">
+  <h1>My Courses</h1>
+  <a href="/instructor/courses/new" class="btn btn-primary">+ Course Baru</a>
+</div>
+<% if (msg) { %><div class="alert alert-success">✅ <%= msg %></div><% } %>
+<% if (!courses.length) { %>
+  <div class="empty-state">
+    <div class="empty-icon">📝</div>
+    <h3>Belum ada course</h3>
+    <p>Buat course pertama Anda dan bagikan pengetahuan dengan siswa.</p>
+    <a class="btn btn-primary btn-block" href="/instructor/courses/new">Buat Course Baru</a>
+  </div>
+<% } else { %>
+<div class="course-grid">
+  <% courses.forEach(function (c) { %>
+    <a class="course-card" href="/instructor/courses/<%= c.id %>">
+      <div class="course-card-img" style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);">
+        <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 48px; opacity: 0.3;">📚</div>
+      </div>
+      <div class="course-card-body">
+        <div class="course-card-top">
+          <span class="tag"><%= c.category_name || 'Umum' %></span>
+          <span class="tag tag-level"><%= c.level %></span>
+        </div>
+        <h2><%= c.title %></h2>
+        <p class="muted" style="flex: 1;"><%= c.student_count %> siswa &middot; <%= c.module_count %> modul &middot; <%= c.lesson_count %> lesson</p>
+        <div style="margin-top: auto; display: flex; gap: 8px; flex-wrap: wrap;">
+          <span class="status-badge status-<%= c.status %>"><%= c.status %></span>
+          <% if (c.status === 'published') { %>
+            <form method="POST" action="/instructor/courses/<%= c.id %>/unpublish" class="inline-form" style="margin:0;">
+              <button class="btn btn-small btn-outline">Unpublish</button>
+            </form>
+          <% } else { %>
+            <form method="POST" action="/instructor/courses/<%= c.id %>/publish" class="inline-form" style="margin:0;">
+              <button class="btn btn-small btn-outline">Publish</button>
+            </form>
+          <% } %>
+        </div>
+      </div>
+    </a>
+  <% }); %>
+</div>
+<% } %>
+<%- include('../../partials/footer') %>

@@ -1,0 +1,39 @@
+<%- include('../partials/header') %>
+<a class="back-link" href="/courses">&larr; Kembali ke katalog</a>
+<div class="card">
+  <div class="course-card-top">
+    <span class="tag"><%= course.category_name || 'Umum' %></span>
+    <span class="tag tag-level"><%= course.level %></span>
+  </div>
+  <h1><%= course.title %></h1>
+  <p class="muted">Oleh <strong><%= course.instructor_name %></strong> &middot; <%= course.module_count %> modul &middot; <%= course.lesson_count %> lesson</p>
+  <p><%= course.description || 'Tanpa deskripsi.' %></p>
+  <% if (currentUser && currentUser.role === 'student') { %>
+    <% if (enrollment) { %>
+      <a class="btn btn-primary" href="/learn/<%= course.id %>">Lanjutkan Belajar</a>
+    <% } else { %>
+      <form method="POST" action="/courses/<%= course.slug %>/enroll">
+        <button class="btn btn-primary">Enroll Sekarang</button>
+      </form>
+    <% } %>
+  <% } %>
+</div>
+<h2 class="section-title">Kurikulum</h2>
+<% course.modules.forEach(function (m) { %>
+  <div class="card module-card">
+    <h3><%= m.title %></h3>
+    <ul class="lesson-list">
+      <% m.lessons.forEach(function (l) { %>
+        <li>
+          <span><%= l.title %></span>
+          <span class="muted"><%= l.duration_minutes %> menit<%= l.is_free_preview ? ' · free preview' : '' %></span>
+        </li>
+      <% }); %>
+      <% if (!m.lessons.length) { %><li class="muted">Belum ada lesson.</li><% } %>
+    </ul>
+  </div>
+<% }); %>
+<% if (!course.modules.length) { %>
+  <div class="card"><p class="muted">Kurikulum belum tersedia.</p></div>
+<% } %>
+<%- include('../partials/footer') %>

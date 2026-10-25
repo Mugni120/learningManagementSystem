@@ -1,0 +1,34 @@
+<%- include('../partials/header') %>
+<div class="page-hero">
+  <h1>Katalog Course</h1>
+  <p>Jelajahi berbagai course terbaik dan mulai belajar kapan saja, di mana saja.</p>
+</div>
+<% if (!courses.length) { %>
+  <div class="empty-state">
+    <div class="empty-icon">📚</div>
+    <h3>Belum ada course yang dipublikasikan</h3>
+    <p>Katalog masih kosong. Kembali nanti untuk melihat course terbaru.</p>
+    <a class="btn btn-outline" href="/dashboard">Kembali ke Dashboard</a>
+  </div>
+<% } else { %>
+<div class="course-grid">
+  <% courses.forEach(function (c) { %>
+    <a class="course-card" href="/courses/<%= c.slug %>">
+      <div class="course-card-img"></div>
+      <div class="course-card-body">
+        <div class="course-card-top">
+          <span class="tag"><%= c.category_name || 'Umum' %></span>
+          <span class="tag tag-level"><%= c.level %></span>
+        </div>
+        <h2><%= c.title %></h2>
+        <p><%= (c.description || '').slice(0, 110) %><%= (c.description || '').length > 110 ? '...' : '' %></p>
+        <div class="course-card-meta">
+          <span>👨‍🏫 <%= c.instructor_name %></span>
+          <span><%= c.module_count %> modul &middot; <%= c.lesson_count %> lesson</span>
+        </div>
+      </div>
+    </a>
+  <% }); %>
+</div>
+<% } %>
+<%- include('../partials/footer') %>

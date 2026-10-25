@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' && title ? title + ' | ' : '' %>LMS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<nav class="navbar">
+  <div class="container nav-inner">
+    <a class="brand" href="/">LMS</a>
+    <button class="menu-toggle" aria-label="Toggle menu">&#9776;</button>
+    <div class="nav-links">
+      <% if (currentUser) { %>
+        <a href="/courses">Katalog</a>
+        <a href="/dashboard">Dashboard</a>
+        <% if (currentUser.role === 'instructor') { %><a href="/instructor/courses">My Courses</a><% } %>
+        <a href="/profile" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.85rem;">Profile</a>
+        <form action="/logout" method="POST" class="inline-form">
+          <button type="submit" class="btn btn-outline">Logout</button>
+        </form>
+      <% } else { %>
+        <a href="/login">Login</a>
+        <a href="/register" class="btn btn-primary">Register</a>
+      <% } %>
+    </div>
+  </div>
+</nav>
+<main class="container main">
+<script>
+  (function () {
+    var btn = document.querySelector('.menu-toggle');
+    var links = document.querySelector('.nav-links');
+    if (btn && links) {
+      btn.addEventListener('click', function () {
+        links.classList.toggle('open');
+      });
+      links.querySelectorAll('a, button').forEach(function (el) {
+        el.addEventListener('click', function () {
+          links.classList.remove('open');
+        });
+      });
+    }
+  })();
+</script>

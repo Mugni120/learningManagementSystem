@@ -1,0 +1,29 @@
+<%- include('../partials/header') %>
+<div class="auth-card">
+  <h1>Register</h1>
+  <p class="muted">Akun baru terdaftar sebagai student.</p>
+  <% if (errors.length) { %>
+    <div class="alert alert-error">
+      <ul class="alert-list">
+        <% errors.forEach(function (e) { %><li><%= e %></li><% }); %>
+      </ul>
+    </div>
+  <% } %>
+  <form method="POST" action="/register" novalidate>
+    <label for="full_name">Nama lengkap
+      <input id="full_name" type="text" name="full_name" value="<%= old.full_name || '' %>" required autofocus>
+    </label>
+    <label for="email">Email
+      <input id="email" type="email" name="email" value="<%= old.email || '' %>" required>
+    </label>
+    <label for="password">Password (min. 8 karakter)
+      <input id="password" type="password" name="password" minlength="8" required>
+    </label>
+    <label for="password_confirm">Konfirmasi password
+      <input id="password_confirm" type="password" name="password_confirm" minlength="8" required>
+    </label>
+    <button type="submit" class="btn btn-primary btn-block">Daftar</button>
+  </form>
+  <p class="muted center">Sudah punya akun? <a href="/login">Login</a></p>
+</div>
+<%- include('../partials/footer') %>

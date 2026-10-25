@@ -1,0 +1,14 @@
+<%- include('../partials/header') %>
+<div class="page-head"><h1>Admin Dashboard</h1></div>
+<% if (msg) { %><div class="alert alert-success"><%= msg %></div><% } %>
+<div class="stat-grid">
+  <div class="stat-card"><span class="stat-value"><%= stats.users %></span><span class="stat-label">Total User</span></div>
+  <div class="stat-card"><span class="stat-value"><%= stats.courses.total %></span><span class="stat-label">Total Course</span></div>
+  <div class="stat-card"><span class="stat-value"><%= stats.courses.published %></span><span class="stat-label">Published</span></div>
+  <div class="stat-card"><span class="stat-value"><%= stats.enrollments %></span><span class="stat-label">Enrollment</span></div>
+</div>
+<div class="action-row">
+  <a class="btn btn-primary" href="/admin/users">Manajemen User</a>
+  <a class="btn btn-outline" href="/admin/courses">Semua Course</a>
+</div>
+<%- include('../partials/footer') %>

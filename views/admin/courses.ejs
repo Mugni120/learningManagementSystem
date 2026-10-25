@@ -1,0 +1,26 @@
+<%- include('../partials/header') %>
+<div class="page-head">
+  <h1>Semua Course</h1>
+  <a class="btn btn-outline" href="/dashboard">Dashboard</a>
+</div>
+<table class="table">
+  <thead>
+    <tr><th>Course</th><th>Instructor</th><th>Status</th><th>Modul</th><th>Lesson</th><th>Student</th></tr>
+  </thead>
+  <tbody>
+  <% courses.forEach(function (c) { %>
+    <tr>
+      <td>
+        <strong><%= c.title %></strong><br>
+        <span class="muted"><%= c.category_name || 'Umum' %> &middot; <%= c.level %></span>
+      </td>
+      <td><%= c.instructor_name %></td>
+      <td><span class="status-badge status-<%= c.status %>"><%= c.status %></span></td>
+      <td><%= c.module_count %></td>
+      <td><%= c.lesson_count %></td>
+      <td><%= c.student_count %></td>
+    </tr>
+  <% }); %>
+  </tbody>
+</table>
+<%- include('../partials/footer') %>

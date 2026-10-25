@@ -1,0 +1,35 @@
+<%- include('../../partials/header') %>
+<a class="back-link" href="/instructor/courses">&larr; Kembali ke My Courses</a>
+<div class="auth-card wide-card">
+  <h1><%= course && course.id ? 'Edit Course' : 'Course Baru' %></h1>
+  <% if (errors.length) { %>
+    <div class="alert alert-error">
+      <ul class="alert-list"><% errors.forEach(function (e) { %><li><%= e %></li><% }); %></ul>
+    </div>
+  <% } %>
+  <form method="POST" action="<%= course && course.id ? '/instructor/courses/' + course.id : '/instructor/courses' %>">
+    <label for="title">Judul course
+      <input id="title" type="text" name="title" value="<%= course ? course.title : '' %>" required>
+    </label>
+    <label for="category_id">Kategori
+      <select id="category_id" name="category_id">
+        <option value="">(Tanpa kategori)</option>
+        <% categories.forEach(function (cat) { %>
+          <option value="<%= cat.id %>" <%= course && String(course.category_id) === String(cat.id) ? 'selected' : '' %>><%= cat.name %></option>
+        <% }); %>
+      </select>
+    </label>
+    <label for="level">Level
+      <select id="level" name="level">
+        <% ['beginner', 'intermediate', 'advanced'].forEach(function (lv) { %>
+          <option value="<%= lv %>" <%= course && course.level === lv ? 'selected' : '' %>><%= lv %></option>
+        <% }); %>
+      </select>
+    </label>
+    <label for="description">Deskripsi
+      <textarea id="description" name="description" rows="5"><%= course ? (course.description || '') : '' %></textarea>
+    </label>
+    <button type="submit" class="btn btn-primary btn-block"><%= course && course.id ? 'Simpan Perubahan' : 'Buat Course' %></button>
+  </form>
+</div>
+<%- include('../../partials/footer') %>

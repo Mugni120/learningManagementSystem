@@ -1,0 +1,78 @@
+<%- include('../partials/header') %>
+<a class="back-link" href="/courses">&larr; Kembali ke katalog</a>
+<div class="page-head">
+  <h1><%= course.title %></h1>
+  <span class="status-badge status-<%= enrollment.status %>"><%= enrollment.status %></span>
+</div>
+<% if (msg) { %><div class="alert alert-success"><%= msg %></div><% } %>
+<div class="card">
+  <div class="progress-head"><span>Progress belajar</span><strong><%= percent %>%</strong></div>
+  <div class="progress-bar"><div class="progress-fill" style="width: <%= percent %>%"></div></div>
+</div>
+
+<h2 class="section-title">Kurikulum</h2>
+<% course.modules.forEach(function (m) { %>
+  <div class="card module-card">
+    <h3><%= m.title %></h3>
+    <ul class="lesson-list">
+      <% m.lessons.forEach(function (l) { %>
+        <li>
+          <a href="/learn/<%= course.id %>/lessons/<%= l.id %>">
+            <span class="check <%= completed.has(l.id) ? 'done' : '' %>"><%= completed.has(l.id) ? 'Selesai' : 'Belum' %></span>
+            <%= l.title %>
+          </a>
+          <span class="muted"><%= l.duration_minutes %> menit</span>
+        </li>
+      <% }); %>
+      <% if (!m.lessons.length) { %><li class="muted">Belum ada lesson.</li><% } %>
+    </ul>
+  </div>
+<% }); %>
+
+<h2 class="section-title">Assignments</h2>
+<% if (!assignments.length) { %>
+  <div class="card"><p class="muted">Belum ada assignment.</p></div>
+<% } else { %>
+  <div class="card">
+    <ul class="lesson-list">
+      <% assignments.forEach(function (a) { %>
+        <% const sub = subByAssignment.get(a.id); %>
+        <li>
+          <a href="/assignments/<%= a.id %>"><%= a.title %></a>
+          <span class="muted">
+            <% if (sub && sub.score !== null) { %>
+              dinilai: <%= sub.score %>/<%= a.max_score %>
+            <% } else if (sub) { %>
+              terkirim, menunggu penilaian
+            <% } else { %>
+              belum dikumpulkan
+            <% } %>
+          </span>
+        </li>
+      <% }); %>
+    </ul>
+  </div>
+<% } %>
+
+<h2 class="section-title">Quizzes</h2>
+<% if (!quizzes.length) { %>
+  <div class="card"><p class="muted">Belum ada quiz.</p></div>
+<% } else { %>
+  <div class="card">
+    <ul class="lesson-list">
+      <% quizzes.forEach(function (q) { %>
+        <li>
+          <a href="/quizzes/<%= q.id %>/result"><%= q.title %></a>
+          <span class="muted">
+            <% if (bestScores.has(q.id)) { %>
+              skor terbaik: <%= bestScores.get(q.id) %> (passing <%= q.passing_score %>)
+            <% } else { %>
+              belum dikerjakan &middot; sisa <%= attemptsLeft.get(q.id) %> kesempatan
+            <% } %>
+          </span>
+        </li>
+      <% }); %>
+    </ul>
+  </div>
+<% } %>
+<%- include('../partials/footer') %>

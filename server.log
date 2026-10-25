@@ -1,0 +1,36 @@
+◇ injected env (8) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+LMS running at http://localhost:3000 (development)
+node:internal/process/promises:394
+    triggerUncaughtException(err, true /* fromPromise */);
+    ^
+
+AggregateError: 
+    at D:\FULL STACK DEVELOPMENT TASK LIST Internship Program\Task 6 –  Learning Management System (LMS)\node_modules\express-mysql-session\index.js:384:30
+    at new Promise (<anonymous>)
+    at MySQLStore.query (D:\FULL STACK DEVELOPMENT TASK LIST Internship Program\Task 6 –  Learning Management System (LMS)\node_modules\express-mysql-session\index.js:381:10)
+    at D:\FULL STACK DEVELOPMENT TASK LIST Internship Program\Task 6 –  Learning Management System (LMS)\node_modules\express-mysql-session\index.js:372:16 {
+  code: 'ECONNREFUSED',
+  fatal: true,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:3306
+        at createConnectionError (node:net:2062:14)
+        at afterConnectMultiple (node:net:2092:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3306
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:3306
+        at createConnectionError (node:net:2062:14)
+        at afterConnectMultiple (node:net:2092:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3306
+    }
+  ]
+}
+
+Node.js v24.21.0

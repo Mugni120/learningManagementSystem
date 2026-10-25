@@ -1,0 +1,57 @@
+<%- include('../../partials/header') %>
+<a class="back-link" href="/instructor/courses">&larr; Kembali ke My Courses</a>
+<div class="page-head">
+  <h1><%= course.title %></h1>
+  <span class="status-badge status-<%= course.status %>"><%= course.status %></span>
+  <div class="spacer"></div>
+  <a class="btn btn-small" href="/instructor/courses/<%= course.id %>/edit">Edit Course</a>
+  <a class="btn btn-small btn-outline" href="/instructor/assignments?course=<%= course.id %>">Assignments</a>
+  <a class="btn btn-small btn-outline" href="/instructor/quizzes?course=<%= course.id %>">Quizzes</a>
+</div>
+<% if (msg) { %><div class="alert alert-success"><%= msg %></div><% } %>
+<% course.modules.forEach(function (m) { %>
+  <div class="card module-card">
+    <div class="module-head">
+      <h2><%= m.title %></h2>
+      <form method="POST" action="/instructor/modules/<%= m.id %>/delete" class="inline-form" data-confirm="Hapus modul ini beserta semua lesson-nya?">
+        <button class="btn btn-small btn-danger">Hapus Modul</button>
+      </form>
+    </div>
+    <form method="POST" action="/instructor/modules/<%= m.id %>" class="rename-row">
+      <input type="text" name="title" value="<%= m.title %>" required>
+      <button class="btn btn-small btn-outline">Rename</button>
+    </form>
+    <table class="table">
+      <thead><tr><th>Lesson</th><th>Durasi</th><th>Free preview</th><th>Aksi</th></tr></thead>
+      <tbody>
+        <% m.lessons.forEach(function (l) { %>
+          <tr>
+            <td><%= l.title %></td>
+            <td><%= l.duration_minutes %> menit</td>
+            <td><%= l.is_free_preview ? 'Ya' : '-' %></td>
+            <td>
+              <div class="action-row">
+                <a class="btn btn-small" href="/instructor/lessons/<%= l.id %>/edit">Edit</a>
+                <form method="POST" action="/instructor/lessons/<%= l.id %>/delete" class="inline-form" data-confirm="Hapus lesson ini?">
+                  <button class="btn btn-small btn-danger">Hapus</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        <% }); %>
+        <% if (!m.lessons.length) { %>
+          <tr><td colspan="4" class="muted">Belum ada lesson di modul ini.</td></tr>
+        <% } %>
+      </tbody>
+    </table>
+    <a class="btn btn-small btn-outline" href="/instructor/lessons/new?module=<%= m.id %>">+ Tambah Lesson</a>
+  </div>
+<% }); %>
+<div class="card">
+  <h2>Tambah Modul</h2>
+  <form method="POST" action="/instructor/courses/<%= course.id %>/modules" class="rename-row">
+    <input type="text" name="title" placeholder="Judul modul, mis. Pertemuan 1" required>
+    <button class="btn btn-primary">Tambah</button>
+  </form>
+</div>
+<%- include('../../partials/footer') %>

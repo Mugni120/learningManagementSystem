@@ -1,0 +1,84 @@
+<%- include('../partials/header') %>
+<div class="page-head">
+  <h1>Halo, <%= currentUser.full_name %></h1>
+  <span class="badge badge-student">Pelajar</span>
+</div>
+
+<% if (role === 'student') { %>
+  <% if (!enrollments.length) { %>
+    <div class="empty-state">
+      <div class="empty-icon">🎯</div>
+      <h3>Belum ada course yang diikuti</h3>
+      <p>Mulai perjalanan belajar Anda dengan mengikuti course yang menarik dari katalog kami.</p>
+      <a class="btn btn-primary btn-block" href="/courses">Jelajahi Katalog</a>
+    </div>
+  <% } %>
+  <% enrollments.forEach(function (e) { %>
+    <div class="card" style="margin-bottom: 20px;">
+      <div class="page-head" style="margin-bottom: 16px;">
+        <h3><%= e.course_title %></h3>
+        <span class="status-badge <%= e.status === 'completed' ? 'status-completed' : 'status-active' %>">
+          <%= e.status === 'completed' ? 'Selesai' : 'Aktif' %>
+        </span>
+      </div>
+      <p class="muted" style="margin-bottom: 12px;">👨‍🏫 <%= e.instructor_name %> &middot; <strong><%= e.lesson_done %></strong>/<%= e.lesson_total %> lesson selesai</p>
+      <div class="progress-head">
+        <span>Progress Belajar</span>
+        <strong><%= e.percent %>%</strong>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width: <%= e.percent %>%"></div></div>
+      <div class="action-row" style="margin-top: 16px;">
+        <a class="btn btn-primary btn-small" href="/learn/<%= e.course_id %>">▶ Lanjutkan Belajar</a>
+        <% if (e.percent >= 100) { %>
+          <a class="btn btn-outline btn-small" href="/learn/<%= e.course_id %>/certificate">📜 Sertifikat</a>
+        <% } %>
+      </div>
+    </div>
+  <% }); %>
+<% } else if (role === 'instructor') { %>
+  <div class="page-head">
+    <h2 class="section-title">Course Saya</h2>
+    <div class="spacer"></div>
+    <a class="btn btn-primary" href="/instructor/courses/new">+ Course Baru</a>
+  </div>
+  <% if (!courses.length) { %>
+    <div class="empty-state">
+      <div class="empty-icon">📝</div>
+      <h3>Belum ada course</h3>
+      <p>Buat course pertama Anda dan bagikan pengetahuan dengan siswa.</p>
+      <a class="btn btn-primary btn-block" href="/instructor/courses/new">Buat Course Baru</a>
+    </div>
+  <% } %>
+  <% courses.forEach(function (c) { %>
+    <div class="card" style="margin-bottom: 20px;">
+      <div class="page-head" style="margin-bottom: 16px;">
+        <h3><%= c.title %></h3>
+        <span class="status-badge status-<%= c.status %>"><%= c.status %></span>
+      </div>
+      <p class="muted" style="margin-bottom: 12px;"><%= c.category_name || 'Umum' %> &middot; <%= c.level %> &middot; <strong><%= c.student_count %></strong> siswa</p>
+      <div class="action-row">
+        <a class="btn btn-small" href="/instructor/courses/<%= c.id %>">🛠 Kelola Materi</a>
+        <a class="btn btn-small btn-outline" href="/instructor/assignments?course=<%= c.id %>">📝 Assignments</a>
+        <a class="btn btn-small btn-outline" href="/instructor/quizzes?course=<%= c.id %>">🧠 Quizzes</a>
+        <a class="btn btn-small btn-outline" href="/instructor/courses/<%= c.id %>/enrollments">👥 Peserta</a>
+      </div>
+    </div>
+  <% }); %>
+<% } else { %>
+  <h2 class="section-title">Ringkasan Platform</h2>
+  <div class="stat-grid">
+    <div class="stat-card"><span class="stat-value"><%= stats.users %></span><span class="muted">Total User</span></div>
+    <div class="stat-card"><span class="stat-value"><%= stats.enrollments %></span><span class="muted">Enrollment</span></div>
+    <div class="stat-card"><span class="stat-value"><%= stats.courses.total %></span><span class="muted">Total Course</span></div>
+    <div class="stat-card"><span class="stat-value"><%= stats.courses.published %></span><span class="muted">Published</span></div>
+  </div>
+  <div class="card">
+    <h3 style="margin-bottom: 12px;">🚀 Aksi Cepat</h3>
+    <div class="action-row">
+      <a class="btn btn-small" href="/admin/users">👥 Kelola User</a>
+      <a class="btn btn-small" href="/admin/courses">📚 Kelola Course</a>
+      <a class="btn btn-small btn-outline" href="/courses">🔍 Lihat Katalog</a>
+    </div>
+  </div>
+<% } %>
+<%- include('../partials/footer') %>

@@ -1,0 +1,25 @@
+<%- include('../partials/header') %>
+<div class="auth-card">
+  <h1>Login</h1>
+  <p class="muted">Masuk ke akun LMS Anda.</p>
+  <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+  <form method="POST" action="/login" novalidate>
+    <label for="email">Email
+      <input id="email" type="email" name="email" required autofocus>
+    </label>
+    <label for="password">Password
+      <input id="password" type="password" name="password" required>
+    </label>
+    <button type="submit" class="btn btn-primary btn-block">Masuk</button>
+  </form>
+  <p class="muted center">Belum punya akun? <a href="/register">Register</a></p>
+  <div class="demo-box">
+    <strong>Demo account</strong>
+    <ul>
+      <li>admin@lms.test / Admin123!</li>
+      <li>instructor@lms.test / Instructor123!</li>
+      <li>student@lms.test / Student123!</li>
+    </ul>
+  </div>
+</div>
+<%- include('../partials/footer') %>

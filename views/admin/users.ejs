@@ -1,0 +1,58 @@
+<%- include('../partials/header') %>
+<div class="page-head">
+  <h1>Manajemen User</h1>
+  <a class="btn btn-outline" href="/dashboard">Kembali ke Dashboard</a>
+</div>
+<% if (msg) { %><div class="alert alert-success"><%= msg %></div><% } %>
+<div class="card" style="margin-bottom: 24px;">
+  <div class="table-responsive" style="overflow-x: auto;">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Nama</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+      <% users.forEach(function (u) { %>
+        <tr>
+          <td>
+            <strong><%= u.full_name %></strong><% if (u.id === currentUser.id) { %> <span class="badge badge-admin">Anda</span><% } %>
+          </td>
+          <td class="muted"><%= u.email %></td>
+          <td>
+            <form method="POST" action="/admin/users/<%= u.id %>" class="role-form inline-form" style="margin:0;">
+              <select name="role_id" <%= u.id === currentUser.id ? 'disabled' : '' %> style="width:auto; padding:6px 10px; border:1px solid var(--border); border-radius:6px; font-size:0.85rem;">
+                <% roles.forEach(function (r) { %>
+                  <option value="<%= r.id %>" <%= u.role_id === r.id ? 'selected' : '' %>><%= r.name %></option>
+                <% }); %>
+              </select>
+              <label class="checkbox-label inline-check" style="margin:0 8px 0 0; font-size:0.85rem;">
+                <input type="checkbox" name="is_active" value="1" <%= u.is_active ? 'checked' : '' %> <%= u.id === currentUser.id ? 'disabled' : '' %>>
+                Aktif
+              </label>
+              <button class="btn btn-small btn-primary" <%= u.id === currentUser.id ? 'disabled' : '' %>>Simpan</button>
+            </form>
+          </td>
+          <td><span class="status-badge <%= u.is_active ? 'status-published' : 'status-archived' %>"><%= u.is_active ? 'Aktif' : 'Nonaktif' %></span></td>
+          <td>
+            <div class="action-row">
+              <% if (u.id !== currentUser.id) { %>
+                <form method="POST" action="/admin/users/<%= u.id %>/delete" class="inline-form" data-confirm="Yakin ingin menghapus user <%= u.full_name %>? Tindakan ini tidak dapat dibatalkan." style="margin:0;">
+                  <button class="btn btn-small btn-danger" type="submit">Hapus</button>
+                </form>
+              <% } else { %>
+                <button class="btn btn-small btn-danger" disabled>Hapus</button>
+              <% } %>
+            </div>
+          </td>
+        </tr>
+      <% }); %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<%- include('../partials/footer') %>

@@ -1,0 +1,36 @@
+<%- include('../partials/header') %>
+<a class="back-link" href="/learn/<%= assignment.course_id %>">&larr; Kembali ke course</a>
+<% if (msg) { %><div class="alert alert-success"><%= msg %></div><% } %>
+<div class="card">
+  <h1><%= assignment.title %></h1>
+  <p class="muted">
+    Deadline: <%= assignment.due_at ? assignment.due_at.toLocaleString('id-ID') : 'tanpa deadline' %>
+    &middot; Max score: <%= assignment.max_score %>
+  </p>
+  <div class="lesson-content"><%= assignment.description || 'Tanpa instruksi tambahan.' %></div>
+</div>
+
+<% if (submission && submission.score !== null) { %>
+  <div class="card">
+    <h2>Submission Anda</h2>
+    <div class="lesson-content"><%= submission.content %></div>
+    <p class="alert alert-success">
+      Nilai: <strong><%= submission.score %>/<%= assignment.max_score %></strong>
+      <%= submission.feedback ? ' · Feedback: ' + submission.feedback : '' %>
+    </p>
+  </div>
+<% } else { %>
+  <div class="card">
+    <h2><%= submission ? 'Perbarui Submission' : 'Kumpulkan Jawaban' %></h2>
+    <% if (submission && assignment.due_at && submission.submitted_at > assignment.due_at) { %>
+      <p class="alert alert-error">Submission terakhir melewati deadline.</p>
+    <% } %>
+    <form method="POST" action="/assignments/<%= assignment.id %>/submit">
+      <label for="content">Jawaban / tulisan
+        <textarea id="content" name="content" rows="8" required><%= submission ? submission.content : '' %></textarea>
+      </label>
+      <button type="submit" class="btn btn-primary"><%= submission ? 'Perbarui Submission' : 'Kumpulkan' %></button>
+    </form>
+  </div>
+<% } %>
+<%- include('../partials/footer') %>

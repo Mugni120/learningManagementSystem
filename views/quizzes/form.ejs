@@ -1,0 +1,28 @@
+<%- include('../partials/header') %>
+<a class="back-link" href="/instructor/quizzes?course=<%= course.id %>">&larr; Kembali ke daftar quiz</a>
+<div class="auth-card wide-card">
+  <h1><%= quiz && quiz.id ? 'Edit Quiz' : 'Quiz Baru' %></h1>
+  <p class="muted">Course: <strong><%= course.title %></strong></p>
+  <% if (errors.length) { %>
+    <div class="alert alert-error">
+      <ul class="alert-list"><% errors.forEach(function (e) { %><li><%= e %></li><% }); %></ul>
+    </div>
+  <% } %>
+  <form method="POST" action="<%= quiz && quiz.id ? '/instructor/quizzes/' + quiz.id : '/instructor/quizzes' %>">
+    <% if (!quiz || !quiz.id) { %><input type="hidden" name="course_id" value="<%= course.id %>"><% } %>
+    <label for="title">Judul quiz
+      <input id="title" type="text" name="title" value="<%= quiz ? quiz.title : '' %>" required>
+    </label>
+    <label for="passing_score">Passing score (0-100)
+      <input id="passing_score" type="number" name="passing_score" min="0" max="100" step="0.01" value="<%= quiz ? quiz.passing_score : 70 %>" required>
+    </label>
+    <label for="max_attempts">Max attempts per student
+      <input id="max_attempts" type="number" name="max_attempts" min="1" step="1" value="<%= quiz ? quiz.max_attempts : 1 %>" required>
+    </label>
+    <label for="description">Deskripsi (opsional)
+      <textarea id="description" name="description" rows="4"><%= quiz ? (quiz.description || '') : '' %></textarea>
+    </label>
+    <button type="submit" class="btn btn-primary btn-block"><%= quiz && quiz.id ? 'Simpan Perubahan' : 'Buat Quiz' %></button>
+  </form>
+</div>
+<%- include('../partials/footer') %>

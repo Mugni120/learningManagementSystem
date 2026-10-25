@@ -1,0 +1,34 @@
+<% function fmtDT(d) {
+     if (!d) return '';
+     if (!(d instanceof Date)) return String(d);
+     const p = (n) => String(n).padStart(2, '0');
+     return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + 'T' + p(d.getHours()) + ':' + p(d.getMinutes());
+   } %>
+<%- include('../partials/header') %>
+<a class="back-link" href="/instructor/assignments?course=<%= course.id %>">&larr; Kembali ke daftar assignment</a>
+<div class="auth-card wide-card">
+  <h1><%= assignment && assignment.id ? 'Edit Assignment' : 'Assignment Baru' %></h1>
+  <p class="muted">Course: <strong><%= course.title %></strong></p>
+  <% if (errors.length) { %>
+    <div class="alert alert-error">
+      <ul class="alert-list"><% errors.forEach(function (e) { %><li><%= e %></li><% }); %></ul>
+    </div>
+  <% } %>
+  <form method="POST" action="<%= assignment && assignment.id ? '/instructor/assignments/' + assignment.id : '/instructor/assignments' %>">
+    <% if (!assignment || !assignment.id) { %><input type="hidden" name="course_id" value="<%= course.id %>"><% } %>
+    <label for="title">Judul assignment
+      <input id="title" type="text" name="title" value="<%= assignment ? assignment.title : '' %>" required>
+    </label>
+    <label for="due_at">Deadline (opsional)
+      <input id="due_at" type="datetime-local" name="due_at" value="<%= assignment ? fmtDT(assignment.due_at) : '' %>">
+    </label>
+    <label for="max_score">Max score
+      <input id="max_score" type="number" name="max_score" min="1" step="0.01" value="<%= assignment ? assignment.max_score : 100 %>" required>
+    </label>
+    <label for="description">Instruksi / deskripsi
+      <textarea id="description" name="description" rows="6"><%= assignment ? (assignment.description || '') : '' %></textarea>
+    </label>
+    <button type="submit" class="btn btn-primary btn-block"><%= assignment && assignment.id ? 'Simpan Perubahan' : 'Buat Assignment' %></button>
+  </form>
+</div>
+<%- include('../partials/footer') %>

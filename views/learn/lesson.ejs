@@ -1,0 +1,20 @@
+<%- include('../partials/header') %>
+<a class="back-link" href="/learn/<%= course.id %>">&larr; Kembali ke course</a>
+<div class="progress-head"><span>Progress: <%= course.title %></span><strong><%= percent %>%</strong></div>
+<div class="progress-bar"><div class="progress-fill" style="width: <%= percent %>%"></div></div>
+<% if (msg) { %><div class="alert alert-success"><%= msg %></div><% } %>
+<div class="card">
+  <h1><%= lesson.title %></h1>
+  <p class="muted"><%= lesson.duration_minutes %> menit<%= lesson.video_url ? ' · ' : '' %>
+    <% if (lesson.video_url) { %><a href="<%= lesson.video_url %>" target="_blank" rel="noopener">Video lesson</a><% } %>
+  </p>
+  <div class="lesson-content"><%= lesson.content || 'Belum ada materi.' %></div>
+  <% if (completed.has(lesson.id)) { %>
+    <p class="alert alert-success">Lesson ini sudah ditandai selesai.</p>
+  <% } else { %>
+    <form method="POST" action="/learn/<%= course.id %>/lessons/<%= lesson.id %>/complete">
+      <button class="btn btn-primary">Tandai selesai</button>
+    </form>
+  <% } %>
+</div>
+<%- include('../partials/footer') %>

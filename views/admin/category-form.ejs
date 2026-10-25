@@ -1,0 +1,19 @@
+<%- include('../partials/header') %>
+<a class="back-link" href="/admin/categories">&larr; Kembali ke daftar kategori</a>
+<div class="auth-card wide-card">
+  <h1><%= category && category.id ? 'Edit Kategori' : 'Kategori Baru' %></h1>
+  <% if (errors.length) { %>
+    <div class="alert alert-error">
+      <ul class="alert-list"><% errors.forEach(function (e) { %><li><%= e %></li><% }); %></ul>
+    </div>
+  <% } %>
+  <form method="POST" action="<%= category && category.id ? '/admin/categories/' + category.id : '/admin/categories' %>">
+    <label for="name">Nama kategori</label>
+    <input id="name" type="text" name="name" value="<%= category ? category.name : '' %>" required>
+    <label for="slug">Slug (URL-friendly)</label>
+    <input id="slug" type="text" name="slug" value="<%= category ? category.slug : '' %>" placeholder="contoh: pemrograman-web" required>
+    <p class="muted">Slug digunakan dalam URL, gunakan huruf kecil, angka, dan strip.</p>
+    <button type="submit" class="btn btn-primary btn-block"><%= category && category.id ? 'Simpan Perubahan' : 'Buat Kategori' %></button>
+  </form>
+</div>
+<%- include('../partials/footer') %>

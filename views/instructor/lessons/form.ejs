@@ -1,0 +1,32 @@
+<%- include('../../partials/header') %>
+<a class="back-link" href="/instructor/courses/<%= module.course_id %>">&larr; Kembali ke builder</a>
+<div class="auth-card wide-card">
+  <h1><%= lesson && lesson.id ? 'Edit Lesson' : 'Lesson Baru' %></h1>
+  <p class="muted">Modul: <strong><%= module.title %></strong></p>
+  <% if (errors.length) { %>
+    <div class="alert alert-error">
+      <ul class="alert-list"><% errors.forEach(function (e) { %><li><%= e %></li><% }); %></ul>
+    </div>
+  <% } %>
+  <form method="POST" action="<%= lesson && lesson.id ? '/instructor/lessons/' + lesson.id : '/instructor/lessons' %>">
+    <% if (!lesson || !lesson.id) { %><input type="hidden" name="module_id" value="<%= module.id %>"><% } %>
+    <label for="title">Judul lesson
+      <input id="title" type="text" name="title" value="<%= lesson ? lesson.title : '' %>" required>
+    </label>
+    <label for="duration_minutes">Durasi (menit)
+      <input id="duration_minutes" type="number" name="duration_minutes" min="0" value="<%= lesson ? lesson.duration_minutes : 0 %>" required>
+    </label>
+    <label for="video_url">Video URL (opsional)
+      <input id="video_url" type="url" name="video_url" value="<%= lesson ? (lesson.video_url || '') : '' %>" placeholder="https://...">
+    </label>
+    <label class="checkbox-label">
+      <input type="checkbox" name="is_free_preview" <%= lesson && lesson.is_free_preview ? 'checked' : '' %>>
+      Free preview (terlihat sebelum enroll)
+    </label>
+    <label for="content">Materi / konten
+      <textarea id="content" name="content" rows="8"><%= lesson ? (lesson.content || '') : '' %></textarea>
+    </label>
+    <button type="submit" class="btn btn-primary btn-block"><%= lesson && lesson.id ? 'Simpan Perubahan' : 'Tambah Lesson' %></button>
+  </form>
+</div>
+<%- include('../../partials/footer') %>

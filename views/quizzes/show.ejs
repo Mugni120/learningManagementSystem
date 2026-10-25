@@ -1,0 +1,133 @@
+<%- include('../partials/header') %>
+<div class="page-head">
+  <h1><%= quiz.title %></h1>
+  <span class="muted">passing <%= quiz.passing_score %> &middot; max <%= quiz.max_attempts %> attempts</span>
+</div>
+<% if (msg) { %><div class="alert alert-success">✅ <%= msg %></div><% } %>
+<% if (typeof errors !== 'undefined' && errors && errors.length) { %>
+  <div class="alert alert-error">
+    <ul class="alert-list"><% errors.forEach(function (e) { %><li>⚠️ <%= e %></li><% }); %></ul>
+  </div>
+<% } %>
+
+<h2 class="section-title">Pertanyaan (<%= quiz.questions.length %>)</h2>
+<% quiz.questions.forEach(function (q, qi) { %>
+  <div class="card quiz-question-card" style="animation-delay: <%= qi * 0.1 %>s;">
+    <div class="module-head">
+      <h2 style="margin:0;"><%= qi + 1 %>. <%= q.question_text %></h2>
+      <span class="tag" style="background: var(--primary-light); color: var(--primary-dark);"><%= q.question_type %></span>
+      <span class="tag tag-level"><%= q.points %> poin</span>
+    </div>
+    <form method="POST" action="/instructor/questions/<%= q.id %>/delete" class="inline-form" data-confirm="Hapus pertanyaan ini?" style="margin:0; position:absolute; right:16px; top:16px;">
+      <button class="btn btn-small btn-danger">Hapus</button>
+    </form>
+    <ul class="option-list">
+      <% q.options.forEach(function (o) { %>
+        <li class="<%= o.is_correct ? 'option-correct' : '' %>">
+          <span style="font-weight:600; color: var(--primary); margin-right:8px;">✓</span>
+          <%= o.option_text %>
+        </li>
+      <% }); %>
+    </ul>
+  </div>
+<% }); %>
+<% if (!quiz.questions.length) { %>
+  <div class="empty-state">
+    <div class="empty-icon">🧠</div>
+    <h3>Belum ada pertanyaan</h3>
+    <p>Tambahkan pertanyaan quiz pertama Anda.</p>
+  </div>
+<% } %>
+
+<div class="card">
+  <h2 style="margin-bottom:16px; display:flex; align-items:center; gap:8px;">➕ Tambah Pertanyaan</h2>
+  <form method="POST" action="/instructor/quizzes/<%= quiz.id %>/questions" id="question-form">
+    <label for="question_text">Teks pertanyaan</label>
+    <textarea id="question_text" name="question_text" rows="2" required placeholder="Tulis pertanyaan di sini..."></textarea>
+    <div class="form-row" style="margin-top:16px;">
+      <div style="flex:1;">
+        <label for="question_type">Tipe</label>
+        <select id="question_type" name="question_type">
+          <option value="multiple_choice">Pilihan Ganda</option>
+          <option value="true_false">Benar / Salah</option>
+        </select>
+      </div>
+      <div style="flex:1; min-width:120px;">
+        <label for="points">Points</label>
+        <input id="points" type="number" name="points" min="0.01" step="0.01" value="1" required>
+      </div>
+    </div>
+    <div id="mc-fields" style="margin-top:16px;">
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <div style="flex:1; min-width:140px;">
+          <label style="display:flex; align-items:center; gap:6px; font-weight:500; font-size:0.9rem;">
+            <input type="radio" name="option_text" value="A" checked style="width:auto;"> Opsi A
+          </label>
+          <input type="text" name="option_text" placeholder="Teks opsi A" required style="width:100%; margin-top:6px;">
+        </div>
+        <div style="flex:1; min-width:140px;">
+          <label style="display:flex; align-items:center; gap:6px; font-weight:500; font-size:0.9rem;">
+            <input type="radio" name="option_text" value="B" style="width:auto;"> Opsi B
+          </label>
+          <input type="text" name="option_text" placeholder="Teks opsi B" required style="width:100%; margin-top:6px;">
+        </div>
+        <div style="flex:1; min-width:140px;">
+          <label style="display:flex; align-items:center; gap:6px; font-weight:500; font-size:0.9rem;">
+            <input type="radio" name="option_text" value="C" style="width:auto;"> Opsi C
+          </label>
+          <input type="text" name="option_text" placeholder="Teks opsi C" style="width:100%; margin-top:6px;">
+        </div>
+        <div style="flex:1; min-width:140px;">
+          <label style="display:flex; align-items:center; gap:6px; font-weight:500; font-size:0.9rem;">
+            <input type="radio" name="option_text" value="D" style="width:auto;"> Opsi D
+          </label>
+          <input type="text" name="option_text" placeholder="Teks opsi D" style="width:100%; margin-top:6px;">
+        </div>
+      </div>
+      <label style="margin-top:12px; font-weight:600; font-size:0.9rem; color: var(--text-soft);">Kunci jawaban</label>
+      <select id="correct_index" name="correct_index" style="width:100%; margin-top:6px; padding:12px 16px; border:1px solid var(--border); border-radius:10px; font-size:0.95rem;">
+        <option value="0">Opsi A</option>
+        <option value="1">Opsi B</option>
+        <option value="2">Opsi C</option>
+        <option value="3">Opsi D</option>
+      </select>
+    </div>
+    <div id="tf-fields" hidden style="margin-top:16px;">
+      <label for="correct_tf">Kunci jawaban</label>
+      <select id="correct_tf" name="correct_tf" style="width:100%; margin-top:6px; padding:12px 16px; border:1px solid var(--border); border-radius:10px; font-size:0.95rem;">
+        <option value="0">True</option>
+        <option value="1">False</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary btn-block" style="margin-top:20px;">💾 Simpan Pertanyaan</button>
+  </form>
+</div>
+<%- include('../partials/footer') %>
+
+<style>
+  .quiz-question-card {
+    position: relative;
+    animation: slideIn 0.4s ease forwards;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  @keyframes slideIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .quiz-question-card .module-head {
+    position: relative;
+    padding-right: 120px;
+  }
+  .option-list li {
+    transition: all 0.2s ease;
+    cursor: default;
+  }
+  .option-list li:hover {
+    background: var(--primary-light);
+    border-color: var(--primary);
+    transform: translateX(4px);
+  }
+  .option-correct {
+    border-left: 4px solid var(--success);
+  }
+</style>
